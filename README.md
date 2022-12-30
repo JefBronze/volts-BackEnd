@@ -1,3 +1,3 @@
 # Step 1 - MVP: December 2022
 
-![alt text](https://github.com/JefBronze/volts/blob/main/logoREADME.png)
+![Logo](https://i.imgur.com/4usj7kl.png)
