@@ -1,17 +1,17 @@
 import { HttpModule } from "@nestjs/axios";
 import { Global, Module } from "@nestjs/common";
-import { VirtualTimeScheduler } from "rxjs";
+import { VRMHttpProvider } from "./providers/http/vrm.http.provider";
 
 @Global()
 @Module({
     imports: [HttpModule.register({})],
     providers: [{
         provide: "VRM",
-        useClass: VirtualTimeScheduler
+        useClass: VRMHttpProvider
     }],
     exports: [{
         provide: "VRM",
-        useClass: VirtualTimeScheduler
+        useClass: VRMHttpProvider
     }]
 })
 export class SharedModule {}

@@ -3,7 +3,6 @@ export interface IVRM {
   loginDemo(): Promise<VRM.LoginDemoResponse>;
   logout(): Promise<VRM.LogoutResponse>;
   userInstallations(
-    idUser: string,
     extended: number,
   ): Promise<VRM.UserinstallationsResponse>;
   userAccesstokensCreate(

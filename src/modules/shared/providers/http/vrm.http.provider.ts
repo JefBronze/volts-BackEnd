@@ -2,12 +2,29 @@ import { Injectable } from '@nestjs/common/decorators';
 import { IVRM } from '../interfaces/ivrm';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
-import { HttpResponseException } from 'core/http/HttpException';
-import { VRMConstant } from 'modules/shared/constants/vrm';
-
+import { HttpResponseException } from '../../../../core/http/HttpException';
+import { VRMConstant } from '../../../../modules/shared/constants/vrm';
+import { OnModuleInit } from '@nestjs/common';
+import { config } from 'dotenv';
+import { Logger } from '@nestjs/common/services';
+config();
 @Injectable()
-export class VRMHttpProvider implements IVRM {
+export class VRMHttpProvider implements IVRM , OnModuleInit {
+  protected logger = new Logger(VRMHttpProvider.name)
+  protected idUser: number
+  protected access_token: string
+
   constructor(private readonly httpService: HttpService) {}
+
+  async onModuleInit() {
+    const { VRM_LOGIN, VRM_PASSWORD } = process.env
+    const { idUser, token } = await this.login({ username: VRM_LOGIN, password: VRM_PASSWORD  })
+    
+    this.idUser = idUser
+    this.access_token = token
+
+    this.logger.debug({ idUser, token })
+  }
 
   async login(data: VRM.Login): Promise<VRM.LoginResponse> {
     try {
@@ -17,6 +34,7 @@ export class VRMHttpProvider implements IVRM {
           data,
         ),
       );
+      this.logger.debug({ data: response.data })
       return response.data;
     } catch (error) {
       throw new HttpResponseException(error);
@@ -50,23 +68,27 @@ export class VRMHttpProvider implements IVRM {
   }
 
   async userInstallations(
-    idUser: string,
     extended: number,
   ): Promise<VRM.UserinstallationsResponse> {
+    console.log({ extended, access_token: this.access_token })
     try {
       const response = await lastValueFrom<{
         data: VRM.UserinstallationsResponse;
       }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + VRMConstant.USERS + idUser + VRMConstant.USERS_INSTALLATIONS, {
+          VRMConstant.BASE_URL + VRMConstant.USERS + this.idUser + VRMConstant.USERS_INSTALLATIONS, {
+            headers: {
+              "x-authorization": `Bearer ${this.access_token}`
+            },
             params: {
-                extended
+              extended
             }
           }
         ),
       );
       return response.data;
     } catch (error) {
+      console.log(error)
       throw new HttpResponseException(error);
     }
   }
