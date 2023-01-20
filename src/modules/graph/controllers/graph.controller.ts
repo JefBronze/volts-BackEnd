@@ -28,6 +28,7 @@ import { WidgetVeBusWarningsService } from '../services/widget_ve_bus_warnings.s
 import { InstallationsSystemOverviewService } from '../services/installations_system_overview.service';
 import { Body } from '@nestjs/common/decorators';
 import { InfoService } from '../services/info.service';
+import { get } from 'http';
 
 @Controller('graph')
 export class GraphController {
@@ -83,6 +84,7 @@ export class GraphController {
     });
   }
 
+  @Get('installations/data-download')
   async installationsDataDownload(
     @Query('idSite') idSite: string,
     @Query('async') async: string,
@@ -103,6 +105,7 @@ export class GraphController {
     });
   }
 
+  @Get('installations/diagnostics')
   async installationsDiagnostics(
     @Query('idSite') idSite: string,
     @Query('count') count: string,
@@ -115,6 +118,7 @@ export class GraphController {
     });
   }
 
+  @Get('installations/gps-download')
   async instalationsGpsDownload(
     @Query('idSite') idSite: string,
     @Query('end') end: string,
@@ -199,6 +203,7 @@ export class GraphController {
     });
   }
 
+  @Get('widget/essbattery')
   async getESSBattery(
     @Query('idSite') idSite: string,
     @Query('end') end: string,
