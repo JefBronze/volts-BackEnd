@@ -19,7 +19,7 @@ export class ExceptionFilterHttp implements ExceptionFilter {
     const contextHttp = host.switchToHttp();
     const response = contextHttp.getResponse();
 
-    console.log(exception)
+    console.log(exception);
 
     const status = 500;
     const body = {

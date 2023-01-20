@@ -1,4 +1,10 @@
 declare namespace VRM {
+  namespace DTO {
+    interface Installations {
+      extended;
+    }
+  }
+
   interface Login {
     username: string;
     password: string;

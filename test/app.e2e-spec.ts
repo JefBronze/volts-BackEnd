@@ -25,8 +25,10 @@ describe('AppController (e2e)', () => {
   });
 
   test('/graph/installations (GET)', async () => {
-    const { body, status } = await request(app.getHttpServer()).get('/graph/installations')
-    console.log(body, status)  
-    expect(status).toEqual(200)
+    const { body, status } = await request(app.getHttpServer()).get(
+      '/graph/installations',
+    );
+    console.log(body, status);
+    expect(status).toEqual(200);
   }, 3000);
 });

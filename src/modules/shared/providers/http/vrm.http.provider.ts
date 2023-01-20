@@ -9,21 +9,24 @@ import { config } from 'dotenv';
 import { Logger } from '@nestjs/common/services';
 config();
 @Injectable()
-export class VRMHttpProvider implements IVRM , OnModuleInit {
-  protected logger = new Logger(VRMHttpProvider.name)
-  protected idUser: number
-  protected access_token: string
+export class VRMHttpProvider implements IVRM, OnModuleInit {
+  protected logger = new Logger(VRMHttpProvider.name);
+  protected idUser: number;
+  protected access_token: string;
 
   constructor(private readonly httpService: HttpService) {}
 
   async onModuleInit() {
-    const { VRM_LOGIN, VRM_PASSWORD } = process.env
-    const { idUser, token } = await this.login({ username: VRM_LOGIN, password: VRM_PASSWORD  })
-    
-    this.idUser = idUser
-    this.access_token = token
+    const { VRM_LOGIN, VRM_PASSWORD } = process.env;
+    const { idUser, token } = await this.login({
+      username: VRM_LOGIN,
+      password: VRM_PASSWORD,
+    });
 
-    this.logger.debug({ idUser, token })
+    this.idUser = idUser;
+    this.access_token = token;
+
+    this.logger.debug({ idUser, token });
   }
 
   async login(data: VRM.Login): Promise<VRM.LoginResponse> {
@@ -34,7 +37,7 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           data,
         ),
       );
-      this.logger.debug({ data: response.data })
+      this.logger.debug({ data: response.data });
       return response.data;
     } catch (error) {
       throw new HttpResponseException(error);
@@ -67,28 +70,51 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     }
   }
 
+  async info() {
+    try {
+      const response = await lastValueFrom(
+        this.httpService.get(
+          `https://vrmapi.victronenergy.com/v2/users/${this.idUser}/info`,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+          },
+        ),
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new HttpResponseException(error);
+    }
+  }
+
   async userInstallations(
     extended: number,
   ): Promise<VRM.UserinstallationsResponse> {
-    console.log({ extended, access_token: this.access_token })
+    console.log({ extended, access_token: this.access_token });
     try {
       const response = await lastValueFrom<{
         data: VRM.UserinstallationsResponse;
       }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + VRMConstant.USERS + this.idUser + VRMConstant.USERS_INSTALLATIONS, {
+          VRMConstant.BASE_URL +
+            VRMConstant.USERS +
+            this.idUser +
+            VRMConstant.USERS_INSTALLATIONS,
+          {
             headers: {
-              "x-authorization": `Bearer ${this.access_token}`
+              'x-authorization': `Bearer ${this.access_token}`,
             },
             params: {
-              extended
-            }
-          }
+              extended,
+            },
+          },
         ),
       );
       return response.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new HttpResponseException(error);
     }
   }
@@ -100,7 +126,13 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     try {
       const response = await lastValueFrom<{ data: VRM.AccessTokenResponse }>(
         this.httpService.post(
-          VRMConstant.BASE_URL + VRMConstant.USERS + idUser, data
+          VRMConstant.BASE_URL + VRMConstant.USERS + this.idUser,
+          data,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+          },
         ),
       );
       return response.data;
@@ -117,7 +149,10 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
         data: VRM.AccessTokenListResponse;
       }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + VRMConstant.USERS + idUser + VRMConstant. ACCESS_TOKENS_LIST,
+          VRMConstant.BASE_URL +
+            VRMConstant.USERS +
+            this.idUser +
+            VRMConstant.ACCESS_TOKENS_LIST,
         ),
       );
       return response.data;
@@ -133,7 +168,11 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     try {
       const response = await lastValueFrom<{ data: VRM.AccessTokenRevoke }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + VRMConstant.USERS + idUser + VRMConstant.ACCESS_TOKENS + idAccessToken,
+          VRMConstant.BASE_URL +
+            VRMConstant.USERS +
+            this.idUser +
+            VRMConstant.ACCESS_TOKENS +
+            idAccessToken,
         ),
       );
       return response.data;
@@ -150,7 +189,14 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
         data: VRM.SystemOverview.Response;
       }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + `/installations/${idSite}` + VRMConstant.AUTH_LOGIN_DEMO,
+          VRMConstant.BASE_URL +
+            `/installations/${idSite}` +
+            VRMConstant.AUTH_LOGIN_DEMO,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+          },
         ),
       );
       return response.data;
@@ -167,12 +213,18 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     try {
       const response = await lastValueFrom<{ data: VRM.Diagnostics.Response }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + `/installations/${idSite}` + VRMConstant.DIAGNOSTIC, {
+          VRMConstant.BASE_URL +
+            `/installations/${idSite}` +
+            VRMConstant.DIAGNOSTIC,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
             params: {
-                count,
-                page
-            }
-          }
+              count,
+              page,
+            },
+          },
         ),
       );
       return response.data;
@@ -189,12 +241,18 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     try {
       const response = await lastValueFrom<{ data: void }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + `/installations/${idSite}` + VRMConstant.GPS_DOWLOADS, {
+          VRMConstant.BASE_URL +
+            `/installations/${idSite}` +
+            VRMConstant.GPS_DOWLOADS,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
             params: {
-                end,
-                start
-            }
-          }
+              end,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -208,6 +266,11 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
       const response = await lastValueFrom<{ data: VRM.TagsResponse }>(
         this.httpService.get(
           VRMConstant.BASE_URL + `/installations/${idSite}` + VRMConstant.TAGS,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+          },
         ),
       );
       return response.data;
@@ -228,16 +291,22 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     try {
       const response = await lastValueFrom<{ data: VRM.DataDownloadResponse }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + `/installations/${idSite}` + VRMConstant.DATA_DOWNLOAD, {
+          VRMConstant.BASE_URL +
+            `/installations/${idSite}` +
+            VRMConstant.DATA_DOWNLOAD,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
             params: {
-                async, 
-                dataype,
-                debug, 
-                end,
-                format, 
-                start
-            }
-          }
+              async,
+              dataype,
+              debug,
+              end,
+              format,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -258,17 +327,21 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     try {
       const response = await lastValueFrom<{ data: VRM.Stats.Response }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + `/installations/${idSite}` + VRMConstant.USERS, {
+          VRMConstant.BASE_URL + `/installations/${idSite}` + VRMConstant.USERS,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
             params: {
-                idSite,
-                attributeCodes,
-                end,
-                interval,
-                show_instance,
-                start,
-                type
-            }
-          }
+              idSite,
+              attributeCodes,
+              end,
+              interval,
+              show_instance,
+              start,
+              type,
+            },
+          },
         ),
       );
       return response.data;
@@ -285,13 +358,19 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
     try {
       const response = await lastValueFrom<{ data: VRM.OverallStats.Response }>(
         this.httpService.get(
-          VRMConstant.BASE_URL + `
-          /installations/${idSite}` + VRMConstant.INSTALLATIONS, {
+          VRMConstant.BASE_URL +
+            `
+          /installations/${idSite}` +
+            VRMConstant.INSTALLATIONS,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
             params: {
-                attributeCodes,
-                type
-            }
-          }
+              attributeCodes,
+              type,
+            },
+          },
         ),
       );
       return response.data;
@@ -322,6 +401,9 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_GRAPH,
           {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
             params: {
               attributeCodes,
               attributeIds,
@@ -353,11 +435,15 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `
           /installations/${idSite}` +
-            VRMConstant.WIDGETS_GPS, {
-                params: {
-                    instance
-                }
-            }
+            VRMConstant.WIDGETS_GPS,
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              instance,
+            },
+          },
         ),
       );
       return response.data;
@@ -380,13 +466,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_HOURS_OF_AC,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -407,13 +496,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_GENERATOR_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -434,13 +526,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_INPUT_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -461,13 +556,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_INVERTER_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -488,13 +586,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_MPPT_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -515,13 +616,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_CHARGE_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -542,13 +646,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_ESS_BATTERY_LIFE_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -569,13 +676,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_FUEL_CELL_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -596,13 +706,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_BATTERY_EXTERNAL_REALY_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -623,13 +736,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_BATTERY_REALY,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -650,13 +766,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_BATTERY_MONITOR_WARNINGS_AND_ALARMS,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -677,13 +796,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_GATEWAY_REALY_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -704,13 +826,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_GATEWAY_REALY_TWO_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -731,13 +856,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_CHARGE_REALY_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -758,13 +886,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGET_SOLAR_CHARGE_REALY_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -785,13 +916,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGET_VE_BUS_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -812,13 +946,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGET_VE_BUS_WARNINGS_AND_ALARMS,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -839,13 +976,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_INVERTER_CHARGE_STATE,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
@@ -866,13 +1006,16 @@ export class VRMHttpProvider implements IVRM , OnModuleInit {
           VRMConstant.BASE_URL +
             `/installations/${idSite}` +
             VRMConstant.WIDGETS_INVERTER_CHARGE_WARNINGS_AND_ALARMS,
-            {
-                params: {
-                    end,
-                    instance,
-                    start
-                }
-            }
+          {
+            headers: {
+              'x-authorization': `Bearer ${this.access_token}`,
+            },
+            params: {
+              end,
+              instance,
+              start,
+            },
+          },
         ),
       );
       return response.data;
