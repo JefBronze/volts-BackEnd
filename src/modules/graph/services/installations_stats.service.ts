@@ -16,7 +16,7 @@ export class InstallationsStatsService {
     show_instance,
     start,
     type,
-  }) {
+  }: any) {
     return await this.vrm.installationsStats(
       idSite,
       attributeCodes,
