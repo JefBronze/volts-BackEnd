@@ -28,7 +28,7 @@
                    <compodoc-menu mode="normal"></compodoc-menu>
                </div>
                <!-- START CONTENT -->
-               <div class="content class">
+               <div class="content injectable">
                    <div class="content-data">
 
 
@@ -38,13 +38,9 @@
 
 
 
-
-
-
-
 <ol class="breadcrumb">
-  <li>Classes</li>
-  <li >HttpResponseException</li>
+  <li>Injectables</li>
+  <li >WidgetsGraphService</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -62,17 +58,10 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/core/http/HttpException.ts</code>
+            <code>src/modules/graph/services/widget_graph.service.ts</code>
         </p>
 
 
-
-            <p class="comment">
-                <h3>Extends</h3>
-            </p>
-            <p class="comment">
-                    <code>Error</code>
-            </p>
 
 
 
@@ -80,22 +69,22 @@
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
+
                 <tr>
                     <td class="col-md-4">
-                        <h6><b>Properties</b></h6>
+                        <h6><b>Methods</b></h6>
                     </td>
                 </tr>
                 <tr>
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#response" >response</a>
+                                    <span class="modifier">Async</span>
+                                <a href="#execute" >execute</a>
                             </li>
                         </ul>
                     </td>
                 </tr>
-
 
 
 
@@ -111,12 +100,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(undefined: Core.Error)</code>
+<code>constructor(vrm: <a href="../interfaces/IVRM.html" target="_self">IVRM</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="2" class="link-to-prism">src/core/http/HttpException.ts:2</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="5" class="link-to-prism">src/modules/graph/services/widget_graph.service.ts:5</a></div>
                             </td>
                         </tr>
 
@@ -134,9 +123,10 @@
                                         </thead>
                                         <tbody>
                                                 <tr>
+                                                        <td>vrm</td>
                                                   
                                                         <td>
-                                                                    <code>Core.Error</code>
+                                                                        <code><a href="../interfaces/IVRM.html" target="_self" >IVRM</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -155,59 +145,131 @@
 
             <section>
     
-    <h3 id="inputs">
-        Properties
+    <h3 id="methods">
+        Methods
     </h3>
     <table class="table table-sm table-bordered">
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="response"></a>
+                    <a name="execute"></a>
                     <span class="name">
-                            <span class="modifier">Private</span>
-                        <span ><b>response</b></span>
-                        <a href="#response"><span class="icon ion-ios-link"></span></a>
+                        <span class="modifier">Async</span>
+                        <span ><b>execute</b></span>
+                        <a href="#execute"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
-                <tr>
-                    <td class="col-md-4">
-                        <i>Type : </i>    <code>Core.Response</code>
-
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="2" class="link-to-prism">src/core/http/HttpException.ts:2</a></div>
-                        </td>
-                    </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>execute(undefined: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
 
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="11"
+                            class="link-to-prism">src/modules/graph/services/widget_graph.service.ts:11</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </section>
-
-
-
-
-
-
 
     </div>
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">export class HttpResponseException extends Error {
-  private response: Core.Response;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Inject, Injectable } from &#x27;@nestjs/common&#x27;;
+import { IVRM } from &#x27;modules/shared/providers/interfaces/ivrm&#x27;;
 
-  constructor({ response }: Core.Error) {
-    super();
-    this.response &#x3D; response;
+@Injectable()
+export class WidgetsGraphService {
+  constructor(
+    @Inject(&#x27;VRM&#x27;)
+    private readonly vrm: IVRM,
+  ) {}
+
+  async execute({
+    idSite,
+    attributeCodes,
+    attributeIds,
+    end,
+    instance,
+    pointsPerPixel,
+    roundedEnd,
+    roundedStart,
+    start,
+    useMinMax,
+    width,
+  }: any) {
+    return await this.vrm.widgetsGraph(
+      idSite,
+      attributeCodes,
+      attributeIds,
+      end,
+      instance,
+      pointsPerPixel,
+      roundedEnd,
+      roundedStart,
+      start,
+      useMinMax,
+      width,
+    );
   }
 }
 </code></pre>
     </div>
+
 </div>
+
+
+
+
 
 
 
@@ -242,8 +304,8 @@
 
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
-            var COMPODOC_CURRENT_PAGE_URL = 'HttpResponseException.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'WidgetsGraphService.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 
