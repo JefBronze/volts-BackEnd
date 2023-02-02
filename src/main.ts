@@ -2,14 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
 import { config } from 'dotenv';
 config();
 
 async function bootstrap() {
-  const { MQTT_HOST } = process.env;
   const app = await NestFactory.create(AppModule);
 
   app.enableCors();

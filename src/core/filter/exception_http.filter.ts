@@ -21,7 +21,7 @@ export class ExceptionFilterHttp implements ExceptionFilter {
 
     console.log(exception);
 
-    const status = 500;
+    const status = 404;
     const body = {
       statusCode: status,
       data: 'Request not completed',

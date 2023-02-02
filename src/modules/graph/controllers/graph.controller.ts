@@ -48,7 +48,7 @@ export class GraphController {
 
   @Post('login')
   async login(@Body() data: VRM.Login) {
-    this.loginService.execute(data);
+    return await this.loginService.execute(data);
   }
 
   @Post('logout')

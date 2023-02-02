@@ -53,6 +53,7 @@ export class VRMHttpProvider implements IVRM, OnModuleInit {
       );
       return response.data;
     } catch (error) {
+      await this.onModuleInit()
       throw new HttpResponseException(error);
     }
   }
@@ -66,6 +67,7 @@ export class VRMHttpProvider implements IVRM, OnModuleInit {
       );
       return response.data;
     } catch (error) {
+      await this.onModuleInit()
       throw new HttpResponseException(error);
     }
   }
@@ -85,6 +87,7 @@ export class VRMHttpProvider implements IVRM, OnModuleInit {
       return response.data;
     } catch (error) {
       console.log(error);
+      await this.onModuleInit()
       throw new HttpResponseException(error);
     }
   }
@@ -115,6 +118,7 @@ export class VRMHttpProvider implements IVRM, OnModuleInit {
       return response.data;
     } catch (error) {
       console.log(error);
+      await this.onModuleInit()
       throw new HttpResponseException(error);
     }
   }
@@ -201,6 +205,7 @@ export class VRMHttpProvider implements IVRM, OnModuleInit {
       );
       return response.data;
     } catch (error) {
+      await this.onModuleInit()
       throw new HttpResponseException(error);
     }
   }
@@ -346,6 +351,7 @@ export class VRMHttpProvider implements IVRM, OnModuleInit {
       );
       return response.data;
     } catch (error) {
+      await this.onModuleInit()
       throw new HttpResponseException(error);
     }
   }
